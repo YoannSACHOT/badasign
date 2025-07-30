@@ -1,6 +1,7 @@
 package fr.jixter.badasign.config;
 
 import java.util.Collections;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@Getter
 public class YousignConfig {
 
   private static final Logger logger = LoggerFactory.getLogger(YousignConfig.class);
@@ -24,6 +26,7 @@ public class YousignConfig {
       @Value("${yousign.api.api-key}") String apiKey) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
+    logger.info("YousignConfig: apiKey={}", apiKey);
   }
 
   /** Creates a configured RestTemplate for Yousign API calls */
@@ -58,18 +61,5 @@ public class YousignConfig {
 
       return execution.execute(request, body);
     };
-  }
-
-  /** Gets the configured base URL for Yousign API */
-  public String getBaseUrl() {
-    return baseUrl;
-  }
-
-  /** Gets the configured API key (masked for security) */
-  public String getMaskedApiKey() {
-    if (apiKey == null || apiKey.length() < 8) {
-      return "***";
-    }
-    return apiKey.substring(0, 4) + "***" + apiKey.substring(apiKey.length() - 4);
   }
 }

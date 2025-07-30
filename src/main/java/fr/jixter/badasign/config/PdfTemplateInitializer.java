@@ -8,13 +8,11 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /** Initializes PDF templates on application startup */
 @Component
-@Order(1) // Run before TestRunner
 public class PdfTemplateInitializer implements CommandLineRunner {
 
   private static final Logger logger = LoggerFactory.getLogger(PdfTemplateInitializer.class);
@@ -47,7 +45,7 @@ public class PdfTemplateInitializer implements CommandLineRunner {
       logger.info("✓ PDF template created successfully: {}", templatePath.toAbsolutePath());
       logger.info("=== PDF Template Initialization Complete ===");
 
-    } catch (IOException e) {
+    } catch (final IOException e) {
       logger.error("✗ Failed to create PDF template: {}", e.getMessage(), e);
       throw new RuntimeException("Failed to initialize PDF template", e);
     }
