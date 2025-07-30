@@ -9,5 +9,4 @@ public class BadasignApplication {
   public static void main(String[] args) {
     SpringApplication.run(BadasignApplication.class, args);
   }
-
 }

@@ -8,7 +8,7 @@ server:
 yousign:
   api:
     base-url: https://api.yousign.app/v3
-    api-key: ${YOUSIGN_API_KEY:epx9QgykeB8kWTL6BIugAzTedB88cmQ3}
+    api-key: ${YOUSIGN_API_KEY}
     
 logging:
   level:
