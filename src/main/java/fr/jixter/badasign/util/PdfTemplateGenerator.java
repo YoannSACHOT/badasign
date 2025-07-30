@@ -91,7 +91,14 @@ public class PdfTemplateGenerator {
       float fieldHeight = 22;
 
       // Article I - Parties contractantes
-      yPosition = drawSectionHeader(contentStream, headerFont, primaryBlue, leftColumn, yPosition, "ARTICLE I - PARTIES CONTRACTANTES");
+      yPosition =
+          drawSectionHeader(
+              contentStream,
+              headerFont,
+              primaryBlue,
+              leftColumn,
+              yPosition,
+              "ARTICLE I - PARTIES CONTRACTANTES");
       yPosition -= 25;
 
       contentStream.beginText();
@@ -125,41 +132,62 @@ public class PdfTemplateGenerator {
       leftFieldY -= 35;
       drawStyledFieldLabel(contentStream, labelFont, leftColumn, leftFieldY, "Nom de famille :");
       leftFieldY -= 35;
-      drawStyledFieldLabel(contentStream, labelFont, leftColumn, leftFieldY, "Adresse électronique :");
+      drawStyledFieldLabel(
+          contentStream, labelFont, leftColumn, leftFieldY, "Adresse électronique :");
 
       // Article II - Objet du contrat
       yPosition -= 120;
-      yPosition = drawSectionHeader(contentStream, headerFont, primaryBlue, leftColumn, yPosition, "ARTICLE II - OBJET DU CONTRAT");
+      yPosition =
+          drawSectionHeader(
+              contentStream,
+              headerFont,
+              primaryBlue,
+              leftColumn,
+              yPosition,
+              "ARTICLE II - OBJET DU CONTRAT");
       yPosition -= 25;
 
       drawStyledFieldLabel(contentStream, labelFont, leftColumn, yPosition, "Poste occupé :");
       yPosition -= 35;
 
-      drawStyledFieldLabel(contentStream, labelFont, leftColumn, yPosition, "Rémunération brute mensuelle :");
+      drawStyledFieldLabel(
+          contentStream, labelFont, leftColumn, yPosition, "Rémunération brute mensuelle :");
       yPosition -= 35;
 
-      drawStyledFieldLabel(contentStream, labelFont, leftColumn, yPosition, "Date de prise d'effet :");
+      drawStyledFieldLabel(
+          contentStream, labelFont, leftColumn, yPosition, "Date de prise d'effet :");
       yPosition -= 50;
 
       // Article III - Dispositions générales
-      yPosition = drawSectionHeader(contentStream, headerFont, primaryBlue, leftColumn, yPosition, "ARTICLE III - DISPOSITIONS GÉNÉRALES");
+      yPosition =
+          drawSectionHeader(
+              contentStream,
+              headerFont,
+              primaryBlue,
+              leftColumn,
+              yPosition,
+              "ARTICLE III - DISPOSITIONS GÉNÉRALES");
       yPosition -= 20;
 
       contentStream.beginText();
       contentStream.setFont(bodyFont, 10);
       contentStream.newLineAtOffset(leftColumn, yPosition);
-      contentStream.showText("Le présent contrat est soumis aux dispositions du Code du travail français.");
+      contentStream.showText(
+          "Le présent contrat est soumis aux dispositions du Code du travail français.");
       contentStream.endText();
       yPosition -= 15;
 
       contentStream.beginText();
       contentStream.newLineAtOffset(leftColumn, yPosition);
-      contentStream.showText("La période d'essai est fixée conformément aux dispositions légales en vigueur.");
+      contentStream.showText(
+          "La période d'essai est fixée conformément aux dispositions légales en vigueur.");
       contentStream.endText();
       yPosition -= 40;
 
       // Signature section with elegant styling
-      yPosition = drawSectionHeader(contentStream, headerFont, primaryBlue, leftColumn, yPosition, "SIGNATURES");
+      yPosition =
+          drawSectionHeader(
+              contentStream, headerFont, primaryBlue, leftColumn, yPosition, "SIGNATURES");
       yPosition -= 30;
 
       // Contract details
@@ -193,15 +221,24 @@ public class PdfTemplateGenerator {
       document.getDocumentCatalog().setAcroForm(acroForm);
 
       // Create form fields with proper positioning
-      createStyledTextField(acroForm, page, "company", leftColumn + 80, pageHeight - 245, fieldWidth, fieldHeight);
-      createStyledTextField(acroForm, page, "firstName", leftColumn + 80, pageHeight - 315, fieldWidth, fieldHeight);
-      createStyledTextField(acroForm, page, "lastName", leftColumn + 120, pageHeight - 350, fieldWidth, fieldHeight);
-      createStyledTextField(acroForm, page, "email", leftColumn + 140, pageHeight - 385, fieldWidth, fieldHeight);
-      createStyledTextField(acroForm, page, "position", leftColumn + 100, pageHeight - 465, fieldWidth, fieldHeight);
-      createStyledTextField(acroForm, page, "amount", leftColumn + 180, pageHeight - 500, fieldWidth, fieldHeight);
-      createStyledTextField(acroForm, page, "startDate", leftColumn + 130, pageHeight - 535, fieldWidth, fieldHeight);
-      createStyledTextField(acroForm, page, "contractNumber", leftColumn + 130, pageHeight - 645, 120, fieldHeight);
-      createStyledTextField(acroForm, page, "date", rightColumn + 130, pageHeight - 645, 120, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "company", leftColumn + 80, pageHeight - 245, fieldWidth, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "firstName", leftColumn + 80, pageHeight - 315, fieldWidth, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "lastName", leftColumn + 120, pageHeight - 350, fieldWidth, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "email", leftColumn + 140, pageHeight - 385, fieldWidth, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "position", leftColumn + 100, pageHeight - 465, fieldWidth, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "amount", leftColumn + 180, pageHeight - 500, fieldWidth, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "startDate", leftColumn + 130, pageHeight - 535, fieldWidth, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "contractNumber", leftColumn + 130, pageHeight - 645, 120, fieldHeight);
+      createStyledTextField(
+          acroForm, page, "date", rightColumn + 130, pageHeight - 645, 120, fieldHeight);
       createStyledTextField(acroForm, page, "signature", rightColumn, pageHeight - 735, 150, 40);
 
       // Save the document
@@ -215,13 +252,18 @@ public class PdfTemplateGenerator {
 
   /** Draws a section header with enhanced styling */
   private static float drawSectionHeader(
-      PDPageContentStream contentStream, PDType1Font font, Color color, float x, float y, String text)
+      PDPageContentStream contentStream,
+      PDType1Font font,
+      Color color,
+      float x,
+      float y,
+      String text)
       throws IOException {
     // Draw colored underline
     contentStream.setNonStrokingColor(color);
     contentStream.addRect(x, y - 5, font.getStringWidth(text) / 1000 * 13 + 10, 2);
     contentStream.fill();
-    
+
     // Draw section title
     contentStream.beginText();
     contentStream.setNonStrokingColor(color);
@@ -229,7 +271,7 @@ public class PdfTemplateGenerator {
     contentStream.newLineAtOffset(x, y);
     contentStream.showText(text);
     contentStream.endText();
-    
+
     return y;
   }
 
@@ -267,7 +309,7 @@ public class PdfTemplateGenerator {
     try {
       // Set default appearance with professional styling
       textField.setDefaultAppearance("/Helv 11 Tf 0.2 0.3 0.4 rg");
-      
+
       // Set field properties for better user experience
       if ("signature".equals(fieldName)) {
         // Special styling for signature field
@@ -280,13 +322,15 @@ public class PdfTemplateGenerator {
         // Currency field styling
         textField.setDefaultAppearance("/Helv 11 Tf 0.1 0.4 0.1 rg");
       }
-      
+
       // Set field as required for important fields
-      if ("firstName".equals(fieldName) || "lastName".equals(fieldName) || 
-          "email".equals(fieldName) || "signature".equals(fieldName)) {
+      if ("firstName".equals(fieldName)
+          || "lastName".equals(fieldName)
+          || "email".equals(fieldName)
+          || "signature".equals(fieldName)) {
         textField.setRequired(true);
       }
-      
+
     } catch (Exception e) {
       logger.warn("Could not set enhanced styling for field {}: {}", fieldName, e.getMessage());
       // Fallback to basic styling
