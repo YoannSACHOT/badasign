@@ -3,12 +3,12 @@ spring:
     name: badasign
 
 server:
-  port: 58081
+  port: 58082
 
 yousign:
   api:
     base-url: https://api.yousign.app/v3
-    api-key: ${YOUSIGN_API_KEY}
+    api-key: ${YOUSIGN_API_KEY:my_key}
     
 logging:
   level:
