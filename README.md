@@ -62,8 +62,8 @@ mvn spring-boot:run
 ```
 
 4. **Accéder à l'application**
-- Application : http://localhost:8080
-- Documentation API : http://localhost:8080/swagger-ui.html
+- Application : http://localhost:58082
+- Documentation API : http://localhost:58082/swagger-ui.html
 
 ## Utilisation
 
@@ -83,7 +83,7 @@ mvn spring-boot:run
 
 ```bash
 # Remplir un template PDF
-curl -X POST http://localhost:8080/api/pdf/fill \
+curl -X POST http://localhost:58082/api/pdf/fill \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "Jean",
@@ -93,7 +93,7 @@ curl -X POST http://localhost:8080/api/pdf/fill \
   }'
 
 # Traitement complet d'un document pour signature
-curl -X POST http://localhost:8080/api/signature/process \
+curl -X POST http://localhost:58082/api/signature/process \
   -F "file=@document.pdf" \
   -F "signerEmail=signer@example.com" \
   -F "signerName=Jean Dupont"

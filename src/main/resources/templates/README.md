@@ -168,7 +168,7 @@ echo "Validation terminée."
 
 ```bash
 # Tester le remplissage du template
-curl -X POST http://localhost:8080/api/pdf/fill \
+curl -X POST http://localhost:58082/api/pdf/fill \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "Jean",
