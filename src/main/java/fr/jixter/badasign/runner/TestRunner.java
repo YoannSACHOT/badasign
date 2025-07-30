@@ -2,19 +2,20 @@ package fr.jixter.badasign.runner;
 
 import fr.jixter.badasign.service.PdfFillingService;
 import fr.jixter.badasign.service.YousignService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 @Component
+@Order(2) // Run after PdfTemplateInitializer
 public class TestRunner implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(TestRunner.class);
