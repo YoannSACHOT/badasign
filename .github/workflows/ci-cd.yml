@@ -10,6 +10,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Test and Build
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     
     steps:
     - name: Checkout code
@@ -47,6 +51,14 @@ jobs:
         name: Maven Tests
         path: target/surefire-reports/*.xml
         reporter: java-junit
+        path-replace-backslashes: false
+        list-suites: all
+        list-tests: all
+        max-annotations: 10
+        fail-on-error: true
+        fail-on-empty: true
+        only-summary: false
+        token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
