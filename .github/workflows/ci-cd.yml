@@ -83,8 +83,10 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
         
     - name: Run OWASP Dependency Check
+      env:
+        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       run: |
-        mvn org.owasp:dependency-check-maven:check
+        mvn org.owasp:dependency-check-maven:check -Dnvd.api.key=${{ secrets.NVD_API_KEY }}
       continue-on-error: true
       
     - name: Upload security scan results
