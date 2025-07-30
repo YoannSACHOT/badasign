@@ -7,22 +7,23 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Order(2) // Run after PdfTemplateInitializer
+@RequiredArgsConstructor
 public class TestRunner implements CommandLineRunner {
 
   private static final Logger logger = LoggerFactory.getLogger(TestRunner.class);
 
-  @Autowired private PdfFillingService pdfFillingService;
+  private final PdfFillingService pdfFillingService;
 
-  @Autowired private YousignService yousignService;
+  private final YousignService yousignService;
 
   @Override
   public void run(String... args) throws Exception {
@@ -51,23 +52,12 @@ public class TestRunner implements CommandLineRunner {
         String signerEmail = testData.get("email");
         String signerName = testData.get("firstName") + " " + testData.get("lastName");
 
-        try {
-          String procedureId =
-              yousignService.processDocumentForSignature(
-                  filledPdfPath, fileName, signerEmail, signerName);
-
-          logger.info("✓ Document processed for signature successfully!");
-          logger.info("✓ Signature procedure ID: {}", procedureId);
-          logger.info("✓ Signer will receive an email at: {}", signerEmail);
-
-        } catch (Exception e) {
-          logger.error("✗ Failed to process document for signature: {}", e.getMessage());
-          logger.info("This might be due to API configuration issues or network connectivity.");
-        }
+        sign(filledPdfPath, fileName, signerEmail, signerName);
       } else {
         logger.warn("⚠ Yousign API key not configured. Skipping signature process.");
         logger.info(
-            "To test the complete workflow, set the YOUSIGN_API_KEY environment variable or update application.yml");
+            "To test the complete workflow, set the YOUSIGN_API_KEY environment variable or update"
+                + " application.yml");
       }
 
       // Step 4: Cleanup (optional - keep file for inspection)
@@ -79,8 +69,23 @@ public class TestRunner implements CommandLineRunner {
       logger.info("=== Badasign Test Runner Completed Successfully ===");
 
     } catch (Exception e) {
-      logger.error("=== Badasign Test Runner Failed ===", e);
       throw e;
+    }
+  }
+
+  private void sign(Path filledPdfPath, String fileName, String signerEmail, String signerName) {
+    try {
+      String procedureId =
+          yousignService.processDocumentForSignature(
+              filledPdfPath, fileName, signerEmail, signerName);
+
+      logger.info("✓ Document processed for signature successfully!");
+      logger.info("✓ Signature procedure ID: {}", procedureId);
+      logger.info("✓ Signer will receive an email at: {}", signerEmail);
+
+    } catch (Exception e) {
+      logger.error("✗ Failed to process document for signature: {}", e.getMessage());
+      logger.info("This might be due to API configuration issues or network connectivity.");
     }
   }
 

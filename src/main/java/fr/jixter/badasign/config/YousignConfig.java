@@ -16,11 +16,15 @@ public class YousignConfig {
 
   private static final Logger logger = LoggerFactory.getLogger(YousignConfig.class);
 
-  @Value("${yousign.api.base-url}")
-  private String baseUrl;
+  private final String baseUrl;
+  private final String apiKey;
 
-  @Value("${yousign.api.api-key}")
-  private String apiKey;
+  public YousignConfig(
+      @Value("${yousign.api.base-url}") String baseUrl,
+      @Value("${yousign.api.api-key}") String apiKey) {
+    this.baseUrl = baseUrl;
+    this.apiKey = apiKey;
+  }
 
   /** Creates a configured RestTemplate for Yousign API calls */
   @Bean

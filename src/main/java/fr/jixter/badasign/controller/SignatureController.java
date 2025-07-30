@@ -7,9 +7,9 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +17,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/signature")
+@RequiredArgsConstructor
 public class SignatureController {
 
   private static final Logger logger = LoggerFactory.getLogger(SignatureController.class);
+  public static final String DOCUMENT_ID = "documentId";
+  public static final String STATUS = "status";
+  public static final String SIGNER_EMAIL = "signerEmail";
+  public static final String PROCEDURE_ID = "procedureId";
+  public static final String ERROR = "error";
 
-  @Autowired private YousignService yousignService;
+  private final YousignService yousignService;
 
   @PostMapping("/upload")
   public ResponseEntity<Map<String, String>> uploadDocument(
@@ -31,7 +37,7 @@ public class SignatureController {
 
     if (file.isEmpty()) {
       logger.warn("Empty file received");
-      return ResponseEntity.badRequest().body(Map.of("error", "File is empty"));
+      return ResponseEntity.badRequest().body(Map.of(ERROR, "File is empty"));
     }
 
     try {
@@ -47,15 +53,12 @@ public class SignatureController {
 
       logger.info("Document uploaded successfully with ID: {}", documentId);
       return ResponseEntity.ok(
-          Map.of(
-              "documentId", documentId,
-              "fileName", fileName,
-              "status", "uploaded"));
+          Map.of(DOCUMENT_ID, documentId, "fileName", fileName, STATUS, "uploaded"));
 
     } catch (IOException e) {
       logger.error("Error uploading document: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(Map.of("error", "Failed to upload document: " + e.getMessage()));
+          .body(Map.of(ERROR, "Failed to upload document: " + e.getMessage()));
     }
   }
 
@@ -63,8 +66,8 @@ public class SignatureController {
   public ResponseEntity<Map<String, String>> createSignatureProcedure(
       @RequestBody Map<String, String> request) {
 
-    String documentId = request.get("documentId");
-    String signerEmail = request.get("signerEmail");
+    String documentId = request.get(DOCUMENT_ID);
+    String signerEmail = request.get(SIGNER_EMAIL);
     String signerName = request.get("signerName");
 
     logger.info(
@@ -72,7 +75,7 @@ public class SignatureController {
 
     if (documentId == null || signerEmail == null || signerName == null) {
       return ResponseEntity.badRequest()
-          .body(Map.of("error", "Missing required fields: documentId, signerEmail, signerName"));
+          .body(Map.of(ERROR, "Missing required fields: documentId, signerEmail, signerName"));
     }
 
     try {
@@ -82,15 +85,15 @@ public class SignatureController {
       logger.info("Signature procedure created successfully with ID: {}", procedureId);
       return ResponseEntity.ok(
           Map.of(
-              "procedureId", procedureId,
-              "documentId", documentId,
-              "signerEmail", signerEmail,
-              "status", "created"));
+              PROCEDURE_ID, procedureId,
+              DOCUMENT_ID, documentId,
+              SIGNER_EMAIL, signerEmail,
+              STATUS, "created"));
 
     } catch (IOException e) {
       logger.error("Error creating signature procedure: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(Map.of("error", "Failed to create signature procedure: " + e.getMessage()));
+          .body(Map.of(ERROR, "Failed to create signature procedure: " + e.getMessage()));
     }
   }
 
@@ -104,25 +107,25 @@ public class SignatureController {
       yousignService.activateSignatureProcedure(procedureId);
 
       logger.info("Signature procedure activated successfully: {}", procedureId);
-      return ResponseEntity.ok(Map.of("procedureId", procedureId, "status", "activated"));
+      return ResponseEntity.ok(Map.of(PROCEDURE_ID, procedureId, STATUS, "activated"));
 
     } catch (IOException e) {
       logger.error("Error activating signature procedure: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(Map.of("error", "Failed to activate signature procedure: " + e.getMessage()));
+          .body(Map.of(ERROR, "Failed to activate signature procedure: " + e.getMessage()));
     }
   }
 
   @PostMapping("/process")
   public ResponseEntity<Map<String, String>> processDocumentForSignature(
       @RequestParam("file") MultipartFile file,
-      @RequestParam("signerEmail") String signerEmail,
+      @RequestParam(SIGNER_EMAIL) String signerEmail,
       @RequestParam("signerName") String signerName) {
 
     logger.info("Processing complete signature workflow for: {}", file.getOriginalFilename());
 
     if (file.isEmpty()) {
-      return ResponseEntity.badRequest().body(Map.of("error", "File is empty"));
+      return ResponseEntity.badRequest().body(Map.of(ERROR, "File is empty"));
     }
 
     try {
@@ -147,16 +150,21 @@ public class SignatureController {
           "Complete signature process finished successfully. Procedure ID: {}", procedureId);
       return ResponseEntity.ok(
           Map.of(
-              "procedureId", procedureId,
-              "fileName", fileName,
-              "signerEmail", signerEmail,
-              "signerName", signerName,
-              "status", "processed_and_activated"));
+              PROCEDURE_ID,
+              procedureId,
+              "fileName",
+              fileName,
+              SIGNER_EMAIL,
+              signerEmail,
+              "signerName",
+              signerName,
+              STATUS,
+              "processed_and_activated"));
 
     } catch (IOException e) {
       logger.error("Error processing document for signature: {}", e.getMessage(), e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(Map.of("error", "Failed to process document: " + e.getMessage()));
+          .body(Map.of(ERROR, "Failed to process document: " + e.getMessage()));
     }
   }
 }

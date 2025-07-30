@@ -10,9 +10,9 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +20,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class YousignService {
 
   private static final Logger logger = LoggerFactory.getLogger(YousignService.class);
 
-  @Autowired private RestTemplate yousignRestTemplate;
+  private final RestTemplate yousignRestTemplate;
 
-  @Autowired private YousignConfig yousignConfig;
+  private final YousignConfig yousignConfig;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -68,7 +69,6 @@ public class YousignService {
         throw new IOException("Failed to upload document. Status: " + response.getStatusCode());
       }
     } catch (Exception e) {
-      logger.error("Error uploading document to Yousign: {}", e.getMessage(), e);
       throw new IOException("Failed to upload document to Yousign", e);
     }
   }
@@ -142,7 +142,6 @@ public class YousignService {
             "Failed to create signature procedure. Status: " + response.getStatusCode());
       }
     } catch (Exception e) {
-      logger.error("Error creating signature procedure: {}", e.getMessage(), e);
       throw new IOException("Failed to create signature procedure", e);
     }
   }
@@ -174,7 +173,6 @@ public class YousignService {
             "Failed to activate signature procedure. Status: " + response.getStatusCode());
       }
     } catch (Exception e) {
-      logger.error("Error activating signature procedure: {}", e.getMessage(), e);
       throw new IOException("Failed to activate signature procedure", e);
     }
   }
@@ -208,8 +206,15 @@ public class YousignService {
       return procedureId;
 
     } catch (IOException e) {
-      logger.error("Error in complete signature process: {}", e.getMessage(), e);
-      throw e;
+      logger.error(
+          "Failed to complete signature process for document: {}. Signer: {}, Error: {}",
+          fileName,
+          signerEmail,
+          e.getMessage(),
+          e);
+      throw new IOException(
+          "Failed to complete signature process for document: " + fileName + ". " + e.getMessage(),
+          e);
     }
   }
 }
