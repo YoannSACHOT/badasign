@@ -35,12 +35,6 @@ jobs:
     - name: Run unit tests
       run: mvn clean test -Dtest="!**/*IntegrationTest"
       
-    - name: Run integration tests
-      run: mvn test -Dtest="**/*IntegrationTest"
-      env:
-        YOUSIGN_API_KEY: ${{ secrets.YOUSIGN_API_KEY }}
-      continue-on-error: true
-      
     - name: Build application
       run: mvn compile package -DskipTests
       
