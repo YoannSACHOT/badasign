@@ -38,7 +38,7 @@ jobs:
       continue-on-error: true
       
     - name: Build application
-      run: mvn clean compile package -DskipTests
+      run: mvn compile package -DskipTests
       
     - name: Generate test report
       uses: dorny/test-reporter@v1
