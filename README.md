@@ -12,8 +12,8 @@ Badasign est une application Spring Boot qui permet de remplir des templates PDF
 ## Technologies Utilisées
 
 - **Java 21** - Langage de programmation
-- **Spring Boot 3.5.4** - Framework principal
-- **Apache PDFBox 2.0.29** - Manipulation des fichiers PDF
+- **Spring Boot 3.5.5** - Framework principal
+- **Apache PDFBox 2.0.35** - Manipulation des fichiers PDF
 - **Yousign API** - Service de signature électronique
 - **SpringDoc OpenAPI** - Documentation API automatique
 - **Lombok** - Réduction du code boilerplate
@@ -34,7 +34,7 @@ Créez un fichier `application.yml` dans `src/main/resources/` avec votre config
 ```yaml
 yousign:
   api:
-    base-url: https://api-sandbox.yousign.app/v3
+    base-url: https://api.yousign.app/v3  # URL par défaut (production). Utilisez https://api-sandbox.yousign.app/v3 pour le sandbox.
     api-key: YOUR_YOUSIGN_API_KEY
 ```
 
@@ -63,7 +63,34 @@ mvn spring-boot:run
 
 4. **Accéder à l'application**
 - Application : http://localhost:58082
-- Documentation API : http://localhost:58082/swagger-ui.html
+- Documentation API : http://localhost:58082/swagger-ui/index.html
+
+## Exécution avec Docker
+
+1. Construire le JAR
+```bash
+mvn clean package -DskipTests
+```
+
+2. Construire l'image Docker
+```bash
+docker build -t badasign:latest .
+```
+
+3. Démarrer le conteneur
+```bash
+docker run --rm \
+  -e YOUSIGN_API_KEY=your_api_key_here \
+  -p 58082:58082 \
+  --name badasign \
+  badasign:latest
+```
+
+4. Accéder à l'application
+- Application : http://localhost:58082
+- Documentation API : http://localhost:58082/swagger-ui/index.html
+
+Note: Le Dockerfile inclut un healthcheck sur l'URL `/actuator/health`. Pour qu'il fonctionne, ajoutez la dépendance `spring-boot-starter-actuator` au projet et exposez l'endpoint de santé, ou bien modifiez/supprimez le healthcheck du Dockerfile selon votre besoin.
 
 ## Utilisation
 
@@ -74,10 +101,8 @@ mvn spring-boot:run
 - `GET /api/pdf/sample-data` - Récupère des données d'exemple
 
 #### Signature Management
-- `POST /api/signature/upload` - Upload un document vers Yousign
-- `POST /api/signature/create-procedure` - Crée une procédure de signature
-- `POST /api/signature/activate/{procedureId}` - Active une procédure de signature
-- `POST /api/signature/process` - Traite un document complet (upload + signature)
+- `POST /api/signature/upload` - Upload d'un document vers Yousign
+  - Paramètres (multipart/form-data): `file` (PDF), `fileName` (nom du fichier), `email` (email du signataire), `name` (nom du signataire)
 
 ### Exemple d'utilisation
 
@@ -92,11 +117,13 @@ curl -X POST http://localhost:58082/api/pdf/fill \
     "date": "30/07/2025"
   }'
 
-# Traitement complet d'un document pour signature
-curl -X POST http://localhost:58082/api/signature/process \
+# Upload d'un document pour signature (Yousign)
+curl -X POST http://localhost:58082/api/signature/upload \
+  -H "Content-Type: multipart/form-data" \
   -F "file=@document.pdf" \
-  -F "signerEmail=signer@example.com" \
-  -F "signerName=Jean Dupont"
+  -F "fileName=document.pdf" \
+  -F "email=signer@example.com" \
+  -F "name=Jean Dupont"
 ```
 
 ## Création de Templates PDF
